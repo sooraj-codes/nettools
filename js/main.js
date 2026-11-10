@@ -1,19 +1,23 @@
 import { initUrlTool } from './modules/urlparser.js';
 
-const navButtons = document.querySelectorAll('.nav-btn');
 const tools = document.querySelectorAll('.tool');
+const navButtons = document.querySelectorAll('.nav-btn');
 const sidebar = document.getElementById('sidebar');
 
-// Switch between tools without reloading the page
-navButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    navButtons.forEach(b => b.classList.remove('active'));
-    tools.forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.target).classList.add('active');
-    sidebar.classList.remove('open');
-  });
+// Show one tool (or the home screen) and hide the others
+function showTool(id) {
+  tools.forEach(t => t.classList.toggle('active', t.id === id));
+  navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+  sidebar.classList.remove('open');
+}
+
+// Sidebar buttons and the cards on the home screen both use data-target
+document.querySelectorAll('[data-target]').forEach(el => {
+  el.addEventListener('click', () => showTool(el.dataset.target));
 });
+
+// Clicking the NetTools title goes back to the home screen
+document.getElementById('homeLink').addEventListener('click', () => showTool('home'));
 
 // Hamburger menu (mobile)
 document.getElementById('menuBtn').addEventListener('click', () => {

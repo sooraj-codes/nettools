@@ -58,3 +58,12 @@ body { margin: 0; font-family: Arial, sans-serif; background: var(--bg); color: 
 .p-query    { color: #1e8caa; } .part-card.p-query    { border-color: #1e8caa; }
 .p-fragment { color: #888888; } .part-card.p-fragment { border-color: #888888; }
 .part-card h3 { color: inherit; }
+
+/* ---- Home screen ---- */
+.topbar h1 { cursor: pointer; }
+.muted { opacity: 0.6; }
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; max-width: 760px; }
+.home-card { text-align: left; padding: 20px; border: 2px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); cursor: pointer; font-family: inherit; }
+.home-card:hover { border-color: var(--accent); }
+.home-card h3 { margin: 0 0 8px; font-size: 18px; }
+.home-card p { margin: 0; opacity: 0.6; font-size: 14px; }

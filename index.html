@@ -9,20 +9,31 @@
 <body>
   <header class="topbar">
     <button id="menuBtn" aria-label="Menu">&#9776;</button>
-    <h1>NetTools</h1>
+    <h1 id="homeLink" title="Home">NetTools</h1>
     <button id="themeBtn">Toggle theme</button>
   </header>
 
   <div class="layout">
     <nav class="sidebar" id="sidebar">
-      <button class="nav-btn active" data-target="url">URL Anatomy</button>
+      <button class="nav-btn" data-target="url">URL Anatomy</button>
       <button class="nav-btn" data-target="ip">IP Info</button>
       <button class="nav-btn" data-target="dns">DNS Lookup</button>
       <button class="nav-btn" data-target="subnet">Subnet / CIDR</button>
+      <button class="nav-btn" data-target="history">History</button>
     </nav>
 
     <main class="content">
-      <section id="url" class="tool active">
+      <section id="home" class="tool active">
+        <h2>Welcome to NetTools</h2>
+        <p class="muted">Choose a tool from the sidebar to begin.</p>
+        <div class="home-grid">
+          <button class="home-card" data-target="url"><h3>URL Anatomy</h3><p>Break a URL into parts</p></button>
+          <button class="home-card" data-target="ip"><h3>IP Info</h3><p>Find where an IP is</p></button>
+          <button class="home-card" data-target="dns"><h3>DNS Lookup</h3><p>See domain records</p></button>
+          <button class="home-card" data-target="subnet"><h3>Subnet / CIDR</h3><p>Calculate subnets</p></button>
+        </div>
+      </section>
+      <section id="url" class="tool">
         <h2>URL Anatomy Visualizer</h2>
         <p>Paste a URL to see its parts explained.</p>
         <form id="urlForm" class="tool-form">
@@ -35,6 +46,7 @@
       <section id="ip" class="tool"><h2>IP Info Lookup</h2><p>Coming soon (Week 3).</p></section>
       <section id="dns" class="tool"><h2>DNS Lookup</h2><p>Coming soon (Week 4).</p></section>
       <section id="subnet" class="tool"><h2>Subnet / CIDR Calculator</h2><p>Coming soon (Week 5).</p></section>
+    <section id="history" class="tool"><h2>History</h2><p>Coming soon (Week 6).</p></section>
     </main>
   </div>
 

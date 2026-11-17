@@ -44,7 +44,9 @@ body { margin: 0; font-family: Arial, sans-serif; background: var(--bg); color: 
 .error { color: #d33; min-height: 1.2em; }
 
 .colored-url { font-family: monospace; font-size: 18px; padding: 14px; border: 1px solid var(--border); border-radius: 6px; margin: 12px 0 20px; word-break: break-all; }
-.parts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.parts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 900px) { .parts-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .parts-grid { grid-template-columns: 1fr; } }
 .part-card { border: 2px solid; border-radius: 6px; padding: 12px; }
 .part-card h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; }
 .part-value { margin: 0 0 8px; font-family: monospace; font-size: 16px; font-weight: bold; word-break: break-all; }

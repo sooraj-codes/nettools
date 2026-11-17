@@ -43,7 +43,18 @@
         <p id="urlError" class="error" role="alert"></p>
         <div id="urlResult"></div>
       </section>
-      <section id="ip" class="tool"><h2>IP Info Lookup</h2><p>Coming soon (Week 3).</p></section>
+      
+      <section id="ip" class="tool">
+  <h2>IP Info Lookup</h2>
+  <p>Enter an IP address, or use My IP to look up your own.</p>
+  <form id="ipForm" class="tool-form">
+    <input type="text" id="ipInput" placeholder="8.8.8.8">
+    <button type="submit">Lookup</button>
+    <button type="button" id="myIpBtn" class="secondary">My IP</button>
+  </form>
+  <p id="ipError" class="error" role="alert"></p>
+  <div id="ipResult"></div>
+</section>
       <section id="dns" class="tool"><h2>DNS Lookup</h2><p>Coming soon (Week 4).</p></section>
       <section id="subnet" class="tool"><h2>Subnet / CIDR Calculator</h2><p>Coming soon (Week 5).</p></section>
     <section id="history" class="tool"><h2>History</h2><p>Coming soon (Week 6).</p></section>

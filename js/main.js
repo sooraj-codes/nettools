@@ -1,4 +1,5 @@
 import { initUrlTool } from './modules/urlparser.js';
+import { initIpTool } from './modules/ipinfo.js';
 
 const tools = document.querySelectorAll('.tool');
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -33,3 +34,4 @@ themeBtn.addEventListener('click', () => {
 });
 
 initUrlTool();
+initIpTool();

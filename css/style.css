@@ -69,3 +69,13 @@ body { margin: 0; font-family: Arial, sans-serif; background: var(--bg); color: 
 .home-card:hover { border-color: var(--accent); }
 .home-card h3 { margin: 0 0 8px; font-size: 18px; }
 .home-card p { margin: 0; opacity: 0.6; font-size: 14px; }
+
+/* ---- IP Info tool ---- */
+.tool-form button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.loading { opacity: 0.7; font-style: italic; }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 10px; }
+.info-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.info-card h3 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; color: var(--accent); }
+.info-card p { margin: 0; font-size: 16px; font-weight: bold; word-break: break-word; }
+@media (max-width: 900px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }

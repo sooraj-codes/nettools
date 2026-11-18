@@ -1,9 +1,10 @@
-import { validateIp } from '../utils/validation.js';
+import { validateIp, isPrivateIp } from '../utils/validation.js';
 import { escapeHtml } from '../utils/format.js';
 
 // Two free APIs. If the first one fails, we try the second one.
 const providers = [
   {
+    name: 'ipapi.co',
     url: (ip) => ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/',
     read: (d) => {
       if (d.error) throw finalError(d.reason || 'No information found for this IP.');
@@ -12,6 +13,7 @@ const providers = [
     }
   },
   {
+    name: 'ipinfo.io',
     url: (ip) => ip ? `https://ipinfo.io/${ip}/json` : 'https://ipinfo.io/json',
     read: (d) => {
       if (d.bogon) throw finalError('This is a private or reserved IP address.');
@@ -22,6 +24,7 @@ const providers = [
     }
   }
 ];
+
 // Turns a country code like "PK" into "Pakistan" (built into the browser)
 function countryName(code) {
   if (!code) return '';
@@ -31,6 +34,7 @@ function countryName(code) {
     return code;
   }
 }
+
 // An error that means "the API answered, and the answer is no", so no fallback needed
 function finalError(message) {
   return Object.assign(new Error(message), { final: true });
@@ -47,7 +51,7 @@ async function fetchIpInfo(ip) {
   for (const provider of providers) {
     try {
       const data = await getJson(provider.url(ip));
-      return provider.read(data);
+      return { ...provider.read(data), source: provider.name };
     } catch (err) {
       if (err.final) throw err;               // real answer (e.g. reserved IP), stop here
       // otherwise try the next provider
@@ -73,7 +77,8 @@ function render(data, resultBox) {
       <p>${escapeHtml(value || 'Not available')}</p>
     </div>`).join('');
 
-  resultBox.innerHTML = `<div class="info-grid">${cards}</div>`;
+  resultBox.innerHTML = `<div class="info-grid">${cards}</div>
+    <p class="note">Data source: ${escapeHtml(data.source)}. Location is approximate and may differ between sources.</p>`;
 }
 
 export function initIpTool() {
@@ -101,6 +106,11 @@ export function initIpTool() {
     const check = validateIp(input.value);
     if (!check.valid) {
       error.textContent = check.message;
+      result.innerHTML = '';
+      return;
+    }
+    if (isPrivateIp(check.ip)) {
+      error.textContent = 'This is a private IP address (used inside home or office networks), so it has no public location. Please use the public IP instead.';
       result.innerHTML = '';
       return;
     }

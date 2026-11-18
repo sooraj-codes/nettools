@@ -1,38 +1,68 @@
 import { validateIp } from '../utils/validation.js';
 import { escapeHtml } from '../utils/format.js';
 
-// Ask the API for IP details. No ip given = look up the user's own IP.
-async function fetchIpInfo(ip) {
-  const url = ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/';
-
-  let response;
+// Two free APIs. If the first one fails, we try the second one.
+const providers = [
+  {
+    url: (ip) => ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/',
+    read: (d) => {
+      if (d.error) throw finalError(d.reason || 'No information found for this IP.');
+      return { ip: d.ip, country: d.country_name, city: d.city, region: d.region,
+               isp: d.org, asn: d.asn, timezone: d.timezone };
+    }
+  },
+  {
+    url: (ip) => ip ? `https://ipinfo.io/${ip}/json` : 'https://ipinfo.io/json',
+    read: (d) => {
+      if (d.bogon) throw finalError('This is a private or reserved IP address.');
+      // ipinfo gives org like "AS15169 Google LLC"
+      const [asn, ...name] = (d.org || '').split(' ');
+      return { ip: d.ip, country: countryName(d.country), city: d.city, region: d.region,
+               isp: name.join(' '), asn: asn, timezone: d.timezone };
+    }
+  }
+];
+// Turns a country code like "PK" into "Pakistan" (built into the browser)
+function countryName(code) {
+  if (!code) return '';
   try {
-    response = await fetch(url);
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(code);
   } catch {
-    throw new Error('Network error. Check your internet connection and try again.');
+    return code;
   }
+}
+// An error that means "the API answered, and the answer is no", so no fallback needed
+function finalError(message) {
+  return Object.assign(new Error(message), { final: true });
+}
 
-  if (response.status === 429) {
-    throw new Error('Too many requests. Please wait a minute and try again.');
-  }
-  if (!response.ok) {
-    throw new Error('The lookup service returned an error. Please try again.');
-  }
+async function getJson(url) {
+  const response = await fetch(url);          // throws if the network fails
+  if (!response.ok) throw new Error('Bad response: ' + response.status);
+  return response.json();
+}
 
-  const data = await response.json();
-  if (data.error) {
-    throw new Error(data.reason || 'No information found for this IP.');
+// Ask the APIs for IP details. No ip given = look up the user's own IP.
+async function fetchIpInfo(ip) {
+  for (const provider of providers) {
+    try {
+      const data = await getJson(provider.url(ip));
+      return provider.read(data);
+    } catch (err) {
+      if (err.final) throw err;               // real answer (e.g. reserved IP), stop here
+      // otherwise try the next provider
+    }
   }
-  return data;
+  throw new Error('Could not reach the lookup services. Check your internet connection, or wait a minute and try again.');
 }
 
 function render(data, resultBox) {
   const fields = [
     ['IP address', data.ip],
-    ['Country', data.country_name],
+    ['Country', data.country],
     ['City', data.city],
     ['Region', data.region],
-    ['ISP / Organisation', data.org],
+    ['ISP / Organisation', data.isp],
     ['ASN', data.asn],
     ['Timezone', data.timezone]
   ];
